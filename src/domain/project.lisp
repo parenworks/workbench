@@ -1,0 +1,36 @@
+(in-package #:workbench)
+
+(defclass project (entity)
+  ((client-id :initarg :client-id :accessor project-client-id)
+   (name :initarg :name :accessor project-name)
+   (slug :initarg :slug :accessor project-slug)
+   (status :initarg :status :accessor project-status :initform :active)
+   (description :initarg :description :accessor project-description :initform "")))
+
+(defgeneric add-note (project user body))
+(defgeneric add-task (project title &key priority due-date))
+(defgeneric record-event (project user event-type &key data))
+(defgeneric archive-project (project user))
+(defgeneric project-summary (project))
+
+(defmethod display-name ((obj project))
+  (project-name obj))
+
+(defmethod validate ((obj project))
+  (and (project-client-id obj)
+       (project-name obj)
+       (project-slug obj)
+       t))
+
+(defmethod archive-project ((obj project) (user user))
+  (declare (ignore user))
+  (setf (project-status obj) :archived)
+  (touch obj)
+  obj)
+
+(defmethod project-summary ((obj project))
+  (list :id (entity-id obj)
+        :name (project-name obj)
+        :slug (project-slug obj)
+        :status (project-status obj)
+        :description (project-description obj)))
