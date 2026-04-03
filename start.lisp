@@ -26,12 +26,11 @@
 
 (workbench:start-workbench)
 
-;;; Seed demo data on first run if database is empty
+;;; Seed demo data on first run if no users exist
 (handler-case
-    (let ((db-path (merge-pathnames "data/workbench.sqlite"
-                                    (asdf:system-source-directory "workbench"))))
-      (unless (probe-file db-path)
-        (format t "~&First run detected — seeding demo data...~%")
+    (let ((users (workbench::list-users)))
+      (when (null users)
+        (format t "~&No users found — seeding demo data...~%")
         (workbench:seed-demo-data)))
   (error (c)
     (format t "~&Note: Could not check for demo data: ~A~%" c)))
