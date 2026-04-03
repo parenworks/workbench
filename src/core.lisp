@@ -32,6 +32,12 @@
                               :display-name "Admin"
                               :role :admin)))
 
+    ;; Create demo user for public access
+    (register-user :email "demo@workbench.local"
+                   :password "demo"
+                   :display-name "Demo User"
+                   :role :user)
+
     ;; Create some clients
     (let ((client-a (create-client :name "Acme Corp"
                                    :contact-name "Alice Smith"
